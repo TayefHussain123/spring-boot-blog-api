@@ -13,12 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+
+
 @Service
 @Transactional
 public class PostServiceImpl implements PostService{
@@ -40,25 +41,19 @@ public class PostServiceImpl implements PostService{
 
     @Override
     public PostResource saveAndReturnPost(PostDto postDto) {
-        System.out.println("Enter service");
+
         if (postRepository.postTitleExists(postDto.getPostTitle()).isPresent()) {
             throw new UnprocessableEntityException("Post title already exists!");
         }
-        ;
         Author theAuthor = authorService.findAuthorByAuthorRdbmsId(postDto.getAuthorRdbmsId())
                 .orElseThrow(()-> new NotFoundException("No author found by this authorRdbmsId!"));
-
 
 
         Category theCategory = categoryService.findCategoryByCategoryRdbmsId(postDto.getCategoryRdbmsId())
                 .orElseThrow(()-> new NotFoundException("No category found by this categoryRdbmsId!"));
 
 
-
-
-
         Post thePost = new Post();
-
         thePost.setPostTitle(postDto.getPostTitle());
         thePost.setPostUrlName(postRepository.postUrlNameExists(Helper.toSlug(postDto.getPostTitle())).isPresent()  ? Helper.toSlug(postDto.getPostTitle()+ Helper.getUniqueString()) : Helper.toSlug(postDto.getPostTitle()));
         thePost.setPostDescription(postDto.getPostDescription());
@@ -68,8 +63,11 @@ public class PostServiceImpl implements PostService{
         thePost.setCreatedAt(Helper.getCurrentTimestamp());
         thePost.setUpdatedAt(Helper.getCurrentTimestamp());
 
-
-        postRepository.save(thePost);
+        try {
+            postRepository.save(thePost);
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Something went wrong on the server!");
+        }
 
         Set<Integer> tagRdbmsIds = new HashSet<>();
         List<Integer> postTagRdbmsIds = postDto.getPostTagRdbmsIds();
@@ -84,19 +82,18 @@ public class PostServiceImpl implements PostService{
             throw new UnprocessableEntityException("Tag not found by this tagRdbmsIds!");
         }
 
-
         Set<String> postTags = new HashSet<>();
 
         tagRdbmsIds.forEach(tagRdbmsId -> {
             tags.forEach(tag -> {
                 postTags.add(tag.getTagName());
+                PostTag thePostTag = new PostTag();
+                thePostTag.setPost(thePost);
+                thePostTag.setTag(tag);
+
                 try {
-                    PostTag thePostTag = new PostTag();
-                    thePostTag.setPost(thePost);
-                    thePostTag.setTag(tag);
                     postTagService.savePostTag(thePostTag.getPost(),tag);
                 } catch (Exception e) {
-                    System.err.println(e.getMessage());
                     throw new InternalServerErrorException("Something went wrong on the server!");
                 }
             });
@@ -154,7 +151,11 @@ public class PostServiceImpl implements PostService{
             thePost.setCategory(theCategory);
         }
 
-
+        try {
+            postRepository.save(thePost);
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Something went wrong on the server!");
+        }
 
         Set<String> postTags = new HashSet<>();;
 
@@ -173,7 +174,6 @@ public class PostServiceImpl implements PostService{
                 throw new UnprocessableEntityException("Tag not found by this tagRdbmsIds!");
             }
 
-
             tagRdbmsIds.forEach(tagRdbmsId -> {
                 tags.forEach(tag -> {
                     postTags.add(tag.getTagName());
@@ -185,9 +185,6 @@ public class PostServiceImpl implements PostService{
                 });
             });
         }
-
-
-        postRepository.save(thePost);
 
         PostResource thePostResource = new PostResource(
                 thePost.getPostRdbmsId(),
@@ -220,7 +217,10 @@ public class PostServiceImpl implements PostService{
         Post thePost = postRepository.findById(postRdbmsId)
                 .orElseThrow(() -> new NotFoundException("No post found by this postRdbmsId!"));
 
-        categoryService.deleteCategoryByCategoryRdbmsId(thePost.getCategory().getCategoryRdbmsId());
-
+        try {
+            categoryService.deleteCategoryByCategoryRdbmsId(thePost.getCategory().getCategoryRdbmsId());
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Something went wrong on the server!");
+        }
     }
 }

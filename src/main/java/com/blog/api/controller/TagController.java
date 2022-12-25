@@ -2,7 +2,6 @@ package com.blog.api.controller;
 
 import com.blog.api.entity.Tag;
 import com.blog.api.exception.BadRequestException;
-import com.blog.api.exception.InternalServerErrorException;
 import com.blog.api.exception.NotFoundException;
 import com.blog.api.exception.UnprocessableEntityException;
 import com.blog.api.helper.Helper;
@@ -36,12 +35,9 @@ public class TagController {
             throw new BadRequestException("Tag name must not be greater than 50 characters!");
         }
 
-        try {
-            Tag createTag = tagService.saveAndReturnTag(tagName);
-            return new ResponseEntity<>(createTag, HttpStatus.CREATED);
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on server!");
-        }
+        Tag createTag = tagService.saveAndReturnTag(tagName);
+        return new ResponseEntity<>(createTag, HttpStatus.CREATED);
+
     }
 
 
@@ -58,12 +54,9 @@ public class TagController {
             throw new UnprocessableEntityException("Tag name must not be more than 50 characters!");
         }
 
-        try {
-            Tag updateTag = tagService.updateTagByTagRdbmsId(tagRdbmsId, tagName);
-            return new ResponseEntity<>(updateTag, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on the server!");
-        }
+        Tag updateTag = tagService.updateTagByTagRdbmsId(tagRdbmsId, tagName);
+        return new ResponseEntity<>(updateTag, HttpStatus.ACCEPTED);
+
     }
 
     @GetMapping("/find/all/")
@@ -140,12 +133,9 @@ public class TagController {
             throw new BadRequestException("Invalid tagRdbmsId!");
         }
 
-        try {
-            tagService.deleteTagByTagRdbmsId(tagRdbmsId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        tagService.deleteTagByTagRdbmsId(tagRdbmsId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on the server!");
-        }
     }
+
 }

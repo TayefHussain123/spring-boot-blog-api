@@ -31,8 +31,4 @@ public class PostTagServiceImpl implements PostTagService{
     }
 
 
-//    @Override
-//    public void deletePostTagByMultiplePostTagRdbmsIds(Long postRdbmsId, Set<Integer> tagRdbmsIds) {
-//        postTagRepository.deletePostTagByMultiplePostTagRdbmsIds(postRdbmsId,tagRdbmsIds);
-//    }
 }

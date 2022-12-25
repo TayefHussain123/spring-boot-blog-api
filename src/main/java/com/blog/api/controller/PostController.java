@@ -3,7 +3,6 @@ package com.blog.api.controller;
 import com.blog.api.dto.PostDto;
 import com.blog.api.entity.Post;
 import com.blog.api.exception.BadRequestException;
-import com.blog.api.exception.InternalServerErrorException;
 import com.blog.api.exception.NotFoundException;
 import com.blog.api.helper.Helper;
 import com.blog.api.resource.PostResource;
@@ -30,9 +29,8 @@ public class PostController {
     @Autowired
     private PostService postService;
 
-
     private static final int MAX_PAGE_SIZE = 20;
-    private Post post;
+
 
     @PostMapping("/create/")
     public ResponseEntity<?> createPost(@RequestBody PostDto postDto) {
@@ -78,15 +76,9 @@ public class PostController {
             throw new BadRequestException("Post description must not be more than 1500 characters!");
         }
 
+        PostResource postResource = postService.saveAndReturnPost(postDto);
+        return new ResponseEntity<>(postResource, HttpStatus.CREATED);
 
-
-        try {
-            PostResource postResource = postService.saveAndReturnPost(postDto);
-            return new ResponseEntity<>(postResource, HttpStatus.CREATED);
-
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on the server!");
-        }
     }
 
 
@@ -111,12 +103,9 @@ public class PostController {
             throw new BadRequestException("Invalid categoryRdbmsId!");
         }
 
-        try {
-            PostResource createPost = postService.updatePostByPostRdbmsId(postRdbmsId,postDto);
-            return new ResponseEntity<>(createPost, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on server!");
-        }
+        PostResource createPost = postService.updatePostByPostRdbmsId(postRdbmsId, postDto);
+        return new ResponseEntity<>(createPost, HttpStatus.ACCEPTED);
+
     }
 
 
@@ -192,30 +181,26 @@ public class PostController {
                     thePost.getCreatedAt(),
                     thePost.getUpdatedAt()
             );
+
             return new ResponseEntity<>(thePostResource, HttpStatus.OK);
+
         }
 
 
 
     @DeleteMapping("/delete/by/post-id/{postRdbmsId}")
     public ResponseEntity <Void> deletePostByPostRdbmsId(@PathVariable("postRdbmsId") Long postRdbmsId) {
+
+        if (postRdbmsId < 1) {
+            throw new BadRequestException("Invalid authorRdbmsId!");
+        }
+
         if (postRdbmsId == null) {
             throw new BadRequestException("Please provide a postId with the request!");
         }
-        try {
-            postService.deletePostByPostPostRdbmsId(postRdbmsId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
-        } catch (Exception e) {
-
-            throw new InternalServerErrorException("Something wrong on server!");
-        }
+        postService.deletePostByPostPostRdbmsId(postRdbmsId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
     }
-
-
-
-
-
 
 }

@@ -1,7 +1,7 @@
 package com.blog.api.service;
 
 import com.blog.api.entity.Author;
-import com.blog.api.entity.Category;
+import com.blog.api.exception.InternalServerErrorException;
 import com.blog.api.exception.NotFoundException;
 import com.blog.api.exception.UnprocessableEntityException;
 import com.blog.api.helper.EntityState;
@@ -9,9 +9,9 @@ import com.blog.api.helper.Helper;
 import com.blog.api.repository.AuthorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.Optional;
+
 
 @Service
 @Transactional
@@ -28,14 +28,18 @@ public class AuthorServiceImpl implements AuthorService{
             throw new UnprocessableEntityException("Author name already exists!");
         }
 
-
         Author theAuthor = new Author();
         theAuthor.setAuthorName(authorName);
         theAuthor.setAuthorUrlName(authorRepository.authorNameExists(Helper.toSlug(authorName)).isPresent()  ? Helper.toSlug(authorName+ Helper.getUniqueString()) : Helper.toSlug(authorName));
         theAuthor.setAuthorState(EntityState.ACTIVE.toString());
         theAuthor.setCreatedAt(Helper.getCurrentTimestamp());
         theAuthor.setUpdatedAt(Helper.getCurrentTimestamp());
-        authorRepository.save(theAuthor);
+
+        try {
+            authorRepository.save(theAuthor);
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Something went wrong on the server!");
+        }
 
         return theAuthor;
     }
@@ -43,6 +47,7 @@ public class AuthorServiceImpl implements AuthorService{
     @Override
     public Optional<Author> findAuthorByAuthorRdbmsId(Long authorRdbmsId) {
         return authorRepository.findById(authorRdbmsId);
+
     }
 
     @Override
@@ -64,7 +69,12 @@ public class AuthorServiceImpl implements AuthorService{
             theAuthor.setAuthorName(authorName);
             theAuthor.setAuthorUrlName(authorRepository.authorNameExists(Helper.toSlug(authorName)).isPresent()  ? Helper.toSlug(authorName+ Helper.getUniqueString()) : Helper.toSlug(authorName));
         }
-        authorRepository.save(theAuthor);
+
+        try {
+            authorRepository.save(theAuthor);
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Something went wrong on the server!");
+        }
 
         return theAuthor;
 
@@ -75,7 +85,10 @@ public class AuthorServiceImpl implements AuthorService{
 
         Author theAuthor = authorRepository.findById(authorRdbmsId)
                 .orElseThrow(() -> new NotFoundException("No author found by this authorRdbmsId!"));
-
-        authorRepository.deleteById(theAuthor.getAuthorRdbmsId());
+        try {
+            authorRepository.deleteById(theAuthor.getAuthorRdbmsId());
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Something went wrong on the server!");
+        }
     }
 }

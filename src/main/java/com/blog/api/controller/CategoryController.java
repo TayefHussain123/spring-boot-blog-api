@@ -2,7 +2,6 @@ package com.blog.api.controller;
 
 import com.blog.api.entity.Category;
 import com.blog.api.exception.BadRequestException;
-import com.blog.api.exception.InternalServerErrorException;
 import com.blog.api.exception.NotFoundException;
 import com.blog.api.exception.UnprocessableEntityException;
 import com.blog.api.helper.Helper;
@@ -36,12 +35,9 @@ public class CategoryController {
             throw new BadRequestException("Category name must not be greater than 50 characters!");
         }
 
-        try {
-            Category createCategory = categoryService.saveAndReturnCategory(categoryName);
-            return new ResponseEntity<>(createCategory, HttpStatus.CREATED);
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on server!");
-        }
+        Category createCategory = categoryService.saveAndReturnCategory(categoryName);
+        return new ResponseEntity<>(createCategory, HttpStatus.CREATED);
+
     }
 
 
@@ -57,12 +53,9 @@ public class CategoryController {
             throw new UnprocessableEntityException("Category name must not be more than 50 characters!");
         }
 
-        try {
-            Category updateCategory = categoryService.updateCategoryByCategoryRdbmsId(categoryRdbmsId, categoryName);
-            return new ResponseEntity<>(updateCategory, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on the server!");
-        }
+        Category updateCategory = categoryService.updateCategoryByCategoryRdbmsId(categoryRdbmsId, categoryName);
+        return new ResponseEntity<>(updateCategory, HttpStatus.ACCEPTED);
+
     }
 
     @GetMapping("/find/all/")
@@ -121,7 +114,6 @@ public class CategoryController {
             throw new BadRequestException("Category url name is required!");
         }
 
-
         Category theCategory = categoryService.findCategoryByCategoryUrlName(categoryUrlName)
                 .orElseThrow(() -> new NotFoundException("No category found by this categoryUrlName!"));
         return new ResponseEntity<>(theCategory, HttpStatus.OK);
@@ -139,14 +131,9 @@ public class CategoryController {
             throw new BadRequestException("Invalid categoryRdbmsId!");
         }
 
-        try {
-            categoryService.deleteCategoryByCategoryRdbmsId(categoryRdbmsId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        categoryService.deleteCategoryByCategoryRdbmsId(categoryRdbmsId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on the server!");
-        }
     }
-
 
 }

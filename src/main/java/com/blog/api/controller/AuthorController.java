@@ -2,7 +2,6 @@ package com.blog.api.controller;
 
 import com.blog.api.entity.Author;
 import com.blog.api.exception.BadRequestException;
-import com.blog.api.exception.InternalServerErrorException;
 import com.blog.api.exception.NotFoundException;
 import com.blog.api.exception.UnprocessableEntityException;
 import com.blog.api.service.AuthorService;
@@ -27,13 +26,8 @@ public class AuthorController {
             throw new UnprocessableEntityException("Author name must not be more than 50 characters!");
         }
 
-        try {
-            Author author = authorService.saveAndReturnAuthor(authorName);
-            return new ResponseEntity(author, HttpStatus.CREATED);
-        } catch (Exception e) {
-            System.err.println(e);
-            throw new InternalServerErrorException("Something wrong on server!");
-        }
+        Author author = authorService.saveAndReturnAuthor(authorName);
+        return new ResponseEntity(author, HttpStatus.CREATED);
 
     }
 
@@ -56,13 +50,9 @@ public class AuthorController {
             throw new UnprocessableEntityException("Author name must not be more than 50 characters!");
         }
 
-        try {
-            Author authorStore = authorService.updateAuthorByAuthorRdbmsId(authorRdbmsId,authorName);
-            return new ResponseEntity<>(authorStore, HttpStatus.ACCEPTED);
-        } catch (Exception e) {
-            System.err.println(e.getMessage());
-            throw new InternalServerErrorException("Something went wrong on the server!");
-        }
+        Author authorStore = authorService.updateAuthorByAuthorRdbmsId(authorRdbmsId, authorName);
+        return new ResponseEntity<>(authorStore, HttpStatus.ACCEPTED);
+
     }
 
     @GetMapping("/find/by/author-id/{authorRdbmsId}")
@@ -91,13 +81,10 @@ public class AuthorController {
         if (authorRdbmsId == null) {
             throw new BadRequestException("Please provide a authorRdbmsId with the request!");
         }
-        try {
-            authorService.deleteByAuthorId(authorRdbmsId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 
-        } catch (Exception e) {
-            throw new InternalServerErrorException("Something went wrong on the server!");
-        }
+        authorService.deleteByAuthorId(authorRdbmsId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
     }
 
 }
