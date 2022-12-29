@@ -3,6 +3,7 @@ package com.blog.api.service;
 import com.blog.api.entity.Post;
 import com.blog.api.entity.PostTag;
 import com.blog.api.entity.Tag;
+import com.blog.api.exception.InternalServerErrorException;
 import com.blog.api.helper.EntityState;
 import com.blog.api.helper.Helper;
 import com.blog.api.repository.PostTagRepository;
@@ -27,7 +28,11 @@ public class PostTagServiceImpl implements PostTagService{
         thePostTag.setPostState(EntityState.ACTIVE.toString());
         thePostTag.setCreatedAt(Helper.getCurrentTimestamp());
         thePostTag.setUpdatedAt(Helper.getCurrentTimestamp());
-        postTagRepository.save(thePostTag);
+        try {
+            postTagRepository.save(thePostTag);
+        } catch (Exception e) {
+            throw new InternalServerErrorException("Something went wrong on the server!");
+        }
     }
 
 

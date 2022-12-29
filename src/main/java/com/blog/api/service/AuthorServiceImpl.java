@@ -36,12 +36,11 @@ public class AuthorServiceImpl implements AuthorService{
         theAuthor.setUpdatedAt(Helper.getCurrentTimestamp());
 
         try {
-            authorRepository.save(theAuthor);
+            return authorRepository.save(theAuthor);
         } catch (Exception e) {
             throw new InternalServerErrorException("Something went wrong on the server!");
         }
 
-        return theAuthor;
     }
 
     @Override
@@ -71,12 +70,12 @@ public class AuthorServiceImpl implements AuthorService{
         }
 
         try {
-            authorRepository.save(theAuthor);
+            return authorRepository.save(theAuthor);
         } catch (Exception e) {
             throw new InternalServerErrorException("Something went wrong on the server!");
         }
 
-        return theAuthor;
+
 
     }
 

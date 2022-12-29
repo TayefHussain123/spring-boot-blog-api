@@ -27,7 +27,7 @@ public class CategoryController {
     @PostMapping("/create/")
     public ResponseEntity<Category> createCategory(@RequestParam String categoryName) {
 
-        if (categoryName == null && categoryName.isBlank()) {
+        if (categoryName == null || categoryName.isBlank()) {
             throw new BadRequestException("Category name is required!");
         }
 

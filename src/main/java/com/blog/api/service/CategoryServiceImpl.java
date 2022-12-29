@@ -40,12 +40,12 @@ public class CategoryServiceImpl implements CategoryService{
         theCategory.setUpdatedAt(Helper.getCurrentTimestamp());
 
         try {
-            categoryRepository.save(theCategory);
+            return categoryRepository.save(theCategory);
         } catch (Exception e) {
             throw new InternalServerErrorException("Something went wrong on the server!");
         }
 
-        return theCategory;
+
 
     }
 
@@ -64,12 +64,11 @@ public class CategoryServiceImpl implements CategoryService{
         }
 
         try {
-            categoryRepository.save(theCategory);
+            return categoryRepository.save(theCategory);
         } catch (Exception e) {
             throw new InternalServerErrorException("Something went wrong on the server!");
         }
 
-        return theCategory;
     }
 
     @Override
@@ -97,7 +96,6 @@ public class CategoryServiceImpl implements CategoryService{
         } catch (Exception e) {
             throw new InternalServerErrorException("Something went wrong on the server!");
         }
-
     }
 
 

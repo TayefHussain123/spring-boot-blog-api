@@ -37,12 +37,12 @@ public class TagServiceImpl implements TagService{
         theTag.setUpdatedAt(Helper.getCurrentTimestamp());
 
         try {
-            tagRepository.save(theTag);
+            return tagRepository.save(theTag);
         } catch (Exception e) {
             throw new InternalServerErrorException("Something went wrong on the server!");
         }
 
-        return theTag;
+
     }
 
     @Override
@@ -65,12 +65,12 @@ public class TagServiceImpl implements TagService{
             theTag.setTagUrlName(tagRepository.tagUrlNameExists(Helper.toSlug(tagName)).isPresent()  ? Helper.toSlug(tagName+ Helper.getUniqueString()) : Helper.toSlug(tagName));
         }
         try {
-            tagRepository.save(theTag);
+            return tagRepository.save(theTag);
         } catch (Exception e) {
             throw new InternalServerErrorException("Something went wrong on the server!");
         }
 
-        return theTag;
+
     }
 
     @Override

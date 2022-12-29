@@ -11,14 +11,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/blog/v1/author/")
+@RequestMapping("/api/blog/v1/author")
 public class AuthorController {
 
     @Autowired
     private AuthorService authorService;
 
     @PostMapping("/create/")
-    public ResponseEntity create(@RequestParam String authorName){
+    public ResponseEntity createAuthor(@RequestParam String authorName){
         if (authorName == null || authorName.isBlank()) {
             throw new UnprocessableEntityException("Author name is required");
         }
