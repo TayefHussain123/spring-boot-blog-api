@@ -14,8 +14,8 @@ change spring.datasource.username and spring.datasource.password as per your mys
 4. **Run the app using maven** <br />
 mvn spring-boot:run
 
-**The app will start running at** <br />
+7. **The app will start running at** <br />
 http://localhost:8000
 
-4. **Find all APIs in Swagger**<br />
+6. **Find all APIs in Swagger**<br />
 http://localhost:8000/api/blog-api/v1/swagger-ui/index.html?configUrl=/api/blog-api/v1/swagger-endpoints/swagger-config
