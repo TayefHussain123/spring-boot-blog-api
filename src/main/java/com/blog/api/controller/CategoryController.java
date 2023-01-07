@@ -1,6 +1,7 @@
 package com.blog.api.controller;
 
 import com.blog.api.entity.Category;
+import com.blog.api.entity.Post;
 import com.blog.api.exception.BadRequestException;
 import com.blog.api.exception.NotFoundException;
 import com.blog.api.exception.UnprocessableEntityException;
@@ -15,6 +16,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/blog/v1/category")
@@ -44,7 +48,6 @@ public class CategoryController {
     @PutMapping("/update/by/category-id/{categoryRdbmsId}")
     public ResponseEntity<Category> updateCategoryByCategoryRdbmsId(@PathVariable("categoryRdbmsId") Integer categoryRdbmsId,
                                                                     @RequestParam("categoryName") String categoryName) {
-
 
         if (categoryRdbmsId < 1) {
             throw new BadRequestException("Invalid categoryRdbmsId!");
