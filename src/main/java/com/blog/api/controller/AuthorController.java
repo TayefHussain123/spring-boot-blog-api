@@ -20,10 +20,10 @@ public class AuthorController {
     @PostMapping("/create/")
     public ResponseEntity createAuthor(@RequestParam String authorName){
         if (authorName == null || authorName.isBlank()) {
-            throw new UnprocessableEntityException("Author name is required");
+            throw new BadRequestException("Author name is required");
         }
         if (authorName.length() > 50) {
-            throw new UnprocessableEntityException("Author name must not be more than 50 characters!");
+            throw new BadRequestException("Author name must not be more than 50 characters!");
         }
 
         Author author = authorService.saveAndReturnAuthor(authorName);
